@@ -101,6 +101,28 @@ function Progress() {
   this.updatePoints(0);
 }
 
+function Overlaid(elementA, elementB) {
+  const a = elementA.getBoundingClientRect();
+  const b = elementB.getBoundingClientRect();
+  const horizontal = a.left + a.width >= b.left && b.left + b.width >= a.left;
+  const vertical = a.top + a.height >= b.top && b.top + b.height >= a.top;
+
+  return horizontal && vertical;
+}
+
+function collision(plane, barriers) {
+  let collision = false;
+  barriers.pairs.forEach((pairBarrier) => {
+    if (!collision) {
+      const top = pairBarrier.barrierTop.element;
+      const bottom = pairBarrier.barrierBottom.element;
+      collision =
+        Overlaid(plane.element, top) || Overlaid(plane.element, bottom);
+    }
+  });
+  return collision;
+}
+
 function FlappyPlane() {
   let points = 0;
 
@@ -122,6 +144,10 @@ function FlappyPlane() {
     const temp = setInterval(() => {
       barriers.animation();
       plane.animation();
+
+      if (collision(plane, barriers)) {
+        clearInterval(temp);
+      }
     }, 20);
   };
 }
