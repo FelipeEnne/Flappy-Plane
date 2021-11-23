@@ -52,7 +52,7 @@ function Barriers(height, width, opening, space, notifyPoint) {
   this.animation = () => {
     this.pairs.forEach((pair) => {
       pair.setX(pair.getX() - move);
-      console.log({ g: pair.getX(), w: -pair.getWidth() });
+
       if (pair.getX() < -pair.getWidth()) {
         pair.setX(pair.getX() + space * this.pairs.length);
         pair.createOpening();
@@ -65,10 +65,42 @@ function Barriers(height, width, opening, space, notifyPoint) {
   };
 }
 
-const b = new Barriers(700, 1200, 200, 400);
-const area = document.querySelector("[wm-flappy]");
-b.pairs.forEach((p) => area.appendChild(p.element));
+function Plane(gameHeight) {
+  let flying = false;
+
+  this.element = newElement("img", "plane");
+  this.element.src = "/imgs/Airplane.png";
+
+  this.getY = () => parseInt(this.element.style.bottom.split("px")[0]);
+  this.setY = (y) => (this.element.style.bottom = `${y}px`);
+
+  window.onkeydown = (e) => (flying = true);
+  window.onkeyup = (e) => (flying = false);
+
+  this.animation = () => {
+    const newY = this.getY() + (flying ? 8 : -5);
+    const maxHeight = gameHeight - this.element.clientHeight;
+
+    if (newY <= 0) {
+      this.setY(0);
+    } else if (newY >= maxHeight) {
+      this.setY(maxHeight);
+    } else {
+      this.setY(newY);
+    }
+  };
+
+  this.setY(gameHeight / 2);
+}
+
+const barrie = new Barriers(700, 1200, 200, 400);
+const plane = new Plane(700);
+const gameArea = document.querySelector("[wm-flappy]");
+
+gameArea.appendChild(plane.element);
+barrie.pairs.forEach((p) => gameArea.appendChild(p.element));
 
 setInterval(() => {
-  b.animation();
+  barrie.animation();
+  plane.animation();
 }, 20);
