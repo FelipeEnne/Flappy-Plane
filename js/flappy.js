@@ -93,14 +93,37 @@ function Plane(gameHeight) {
   this.setY(gameHeight / 2);
 }
 
-const barrie = new Barriers(700, 1200, 200, 400);
-const plane = new Plane(700);
-const gameArea = document.querySelector("[wm-flappy]");
+function Progress() {
+  this.element = newElement("span", "points");
+  this.updatePoints = (point) => {
+    this.element.innerHTML = point;
+  };
+  this.updatePoints(0);
+}
 
-gameArea.appendChild(plane.element);
-barrie.pairs.forEach((p) => gameArea.appendChild(p.element));
+function FlappyPlane() {
+  let points = 0;
 
-setInterval(() => {
-  barrie.animation();
-  plane.animation();
-}, 20);
+  const gameArea = document.querySelector("[wm-flappy]");
+  const gameHeight = gameArea.clientHeight;
+  const gameWidth = gameArea.clientWidth;
+
+  const progress = new Progress();
+  const barriers = new Barriers(gameHeight, gameWidth, 200, 400, () =>
+    progress.updatePoints(++points)
+  );
+  const plane = new Plane(gameHeight);
+
+  gameArea.appendChild(progress.element);
+  gameArea.appendChild(plane.element);
+  barriers.pairs.forEach((p) => gameArea.appendChild(p.element));
+
+  this.start = () => {
+    const temp = setInterval(() => {
+      barriers.animation();
+      plane.animation();
+    }, 20);
+  };
+}
+
+new FlappyPlane().start();
