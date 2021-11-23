@@ -1,0 +1,15 @@
+* {
+    font-family: sans-serif;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: #0D262D;
+    color: #fff;
+    height: 100%;
+    text-align: center;
+}
