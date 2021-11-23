@@ -69,7 +69,7 @@ function Plane(gameHeight) {
   let flying = false;
 
   this.element = newElement("img", "plane");
-  this.element.src = "/imgs/Airplane.png";
+  this.element.src = "imgs/Airplane.png";
 
   this.getY = () => parseInt(this.element.style.bottom.split("px")[0]);
   this.setY = (y) => (this.element.style.bottom = `${y}px`);
